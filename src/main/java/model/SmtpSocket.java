@@ -55,7 +55,7 @@ public final class SmtpSocket {
             output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             MemoBuffer memoBuffer = MemoBuffer.getInstance();
-            memoBuffer.appendClient("connected to " + address);
+            memoBuffer.appendClient("connected to " + address + "\n");
             memoBuffer.appendServer(input.nextLine());
 
             socketCreated = true;
@@ -68,7 +68,7 @@ public final class SmtpSocket {
         }
     }
 
-    public void close() throws SmtpSocketException {
+    public void close() {
         socketCreated = false;
 
         if (input != null) {
@@ -83,7 +83,7 @@ public final class SmtpSocket {
             try {
                 socket.close();
             } catch (IOException e) {
-                throw new SmtpSocketException(e);
+                LOGGER.log(Level.WARN, e);
             }
         }
     }

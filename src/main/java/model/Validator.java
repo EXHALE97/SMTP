@@ -11,15 +11,6 @@ public class Validator {
         return Pattern.matches(EMAIL_REGEXP, emailValue);
     }
 
-    public static boolean validateNullEmpty(String ... parameters) {
-        for (String parameter : parameters) {
-            if (parameter == null || parameter.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static boolean validateGetter(String to) {
         return Pattern.matches(GETTER_EMAIL_REGEXP, to);
     }
