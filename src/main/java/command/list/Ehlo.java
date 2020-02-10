@@ -2,49 +2,39 @@ package command.list;
 
 import command.Command;
 import exception.InvalidParameterException;
-import exception.SmtpSocketException;
+import exception.SmtpException;
 import model.*;
 
-import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Map;
-import java.util.Scanner;
+
 
 public class Ehlo implements Command {
     private static final String EHLO = "EHLO %s\r\n";
 
     @Override
-    public void execute(Map<MailFormUnits, String> parameters) throws InvalidParameterException, SmtpSocketException {
-        try {
-            String smptServerValue = parameters.get(MailFormUnits.SMTP_SERVER);
-            String argumentValue = parameters.get(MailFormUnits.ARGUMENT);
+    public void execute(Map<MailFormUnits, String> parameters) throws InvalidParameterException, SmtpException {
+        SmtpSocket smtpSocket = SmtpSocket.getInstance();
+        String smptServerValue = parameters.get(MailFormUnits.SMTP_SERVER);
+        String argumentValue = parameters.get(MailFormUnits.ARGUMENT);
 
-            SmtpSocket smtpSocket = SmtpSocket.getInstance();
+        try {
             if (smptServerValue != null) {
                 smtpSocket.create(smptServerValue);
             } else {
                 smtpSocket.create(argumentValue);
             }
+        } catch (SmtpException e) {
+            smtpSocket.close();
+            throw new SmtpException(e);
+        }
 
-            String ehlo;
-            try {
-                ehlo = String.format(EHLO, InetAddress.getLocalHost().getHostName());
-            } catch (UnknownHostException e) {
-                throw new SmtpSocketException(e);
-            }
-
-            Scanner input = smtpSocket.getInput();
-            PrintWriter output = smtpSocket.getOutput();
-            MemoBuffer memoBuffer = MemoBuffer.getInstance();
-
-            memoBuffer.appendClient(ehlo);
-            output.write(ehlo);
-            output.flush();
-            memoBuffer.appendServer(input.nextLine());
+        try {
+            String ehlo = String.format(EHLO, InetAddress.getLocalHost().getHostName());
+            executeCommand(ehlo);
         } catch (Exception e) {
-            SmtpSocket.getInstance().close();
-            throw new SmtpSocketException(e);
+            smtpSocket.close();
+            throw new SmtpException(e);
         }
     }
 }

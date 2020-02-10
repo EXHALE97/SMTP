@@ -160,7 +160,7 @@ class CommandsDialog {
                     parameters.replace(MailFormUnits.ARGUMENT, argumentField.getText());
                     Controller.getInstance().processRequest(button.getText(), parameters);
                     updateMemo();
-                } catch (InvalidParameterException | SmtpSocketException exc) {
+                } catch (InvalidParameterException | SmtpException exc) {
                     LOGGER.log(Level.ERROR, exc);
                     JOptionPane.showMessageDialog(dialog, exc.getMessage());
                 }

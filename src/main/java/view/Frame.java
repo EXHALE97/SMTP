@@ -88,7 +88,7 @@ public class Frame {
                 try {
                     Controller.getInstance().processRequest(sendButton.getText(), parameters);
                     updateMemo();
-                } catch (InvalidParameterException | SmtpSocketException exc) {
+                } catch (InvalidParameterException | SmtpException exc) {
                     LOGGER.log(Level.ERROR, exc);
                     JOptionPane.showMessageDialog(frame, exc.getMessage());
                 }

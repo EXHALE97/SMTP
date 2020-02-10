@@ -2,7 +2,6 @@ package controller;
 
 import command.Command;
 import command.CommandFactory;
-import command.CommandType;
 import exception.*;
 import model.*;
 import org.apache.logging.log4j.Level;
@@ -33,7 +32,7 @@ public class Controller {
         return INSTANCE;
     }
 
-    public void processRequest(String commandName, Map<MailFormUnits, String> parameters) throws InvalidParameterException, SmtpSocketException {
+    public void processRequest(String commandName, Map<MailFormUnits, String> parameters) throws InvalidParameterException, SmtpException {
         Optional<Command> optionalCommand = CommandFactory.defineCommand(commandName);
         if (!optionalCommand.isPresent()) {
             throw new InvalidParameterException(commandName + " is invalid command");

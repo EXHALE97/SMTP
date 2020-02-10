@@ -1,6 +1,6 @@
 package model;
 
-import exception.SmtpSocketException;
+import exception.SmtpException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -41,14 +41,14 @@ public final class SmtpSocket {
         return INSTANCE;
     }
 
-    public void create(String address) throws SmtpSocketException {
+    public void create(String address) throws SmtpException {
         if (socketCreated) {
             return;
         }
         try {
             InetAddress inetAddress = InetAddress.getByName(address);
             if (!inetAddress.isReachable(5000)) {
-                throw new SmtpSocketException(address + " is invalid host");
+                throw new SmtpException(address + " is invalid host");
             }
             socket = new Socket(inetAddress, PORT);
             input = new Scanner(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -61,10 +61,10 @@ public final class SmtpSocket {
             socketCreated = true;
         } catch (UnknownHostException e) {
             close();
-            throw new SmtpSocketException("invalid host", e);
+            throw new SmtpException("invalid host", e);
         } catch (IOException e) {
             close();
-            throw new SmtpSocketException(e);
+            throw new SmtpException(e);
         }
     }
 
@@ -88,16 +88,16 @@ public final class SmtpSocket {
         }
     }
 
-    public Scanner getInput() throws SmtpSocketException {
+    public Scanner getInput() throws SmtpException {
         if (!socketCreated) {
-            throw new SmtpSocketException("socket closed");
+            throw new SmtpException("socket closed");
         }
         return input;
     }
 
-    public PrintWriter getOutput() throws SmtpSocketException {
+    public PrintWriter getOutput() throws SmtpException {
         if (!socketCreated) {
-            throw new SmtpSocketException("socket closed");
+            throw new SmtpException("socket closed");
         }
         return output;
     }
