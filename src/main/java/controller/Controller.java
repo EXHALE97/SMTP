@@ -7,6 +7,8 @@ import model.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,8 +25,8 @@ public class Controller {
 
     private Controller() {
         if (instanceCreated) {
-            LOGGER.log(Level.FATAL, "");
-            throw new RuntimeException("");
+            LOGGER.log(Level.FATAL, "try to clone object");
+            throw new RuntimeException("try to clone object");
         }
     }
 
@@ -45,7 +47,7 @@ public class Controller {
     @Override
     protected Object clone() throws CloneNotSupportedException {
         if (instanceCreated) {
-            throw new CloneNotSupportedException();
+            throw new CloneNotSupportedException("try to clone object");
         }
         return super.clone();
     }

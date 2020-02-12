@@ -31,8 +31,8 @@ public final class SmtpSocket {
 
     private SmtpSocket() {
         if (instanceCreated) {
-            LOGGER.log(Level.FATAL, "try to clone singleton object");
-            throw new RuntimeException("try to clone singleton object");
+            LOGGER.log(Level.FATAL, "try to clone object");
+            throw new RuntimeException("try to clone object");
         }
     }
 

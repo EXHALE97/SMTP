@@ -1,12 +1,12 @@
 package command;
 
-import exception.InvalidParameterException;
 import exception.SmtpException;
 import model.MailFormUnits;
 import model.MemoBuffer;
 import model.SmtpSocket;
 
 import java.io.PrintWriter;
+import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.Scanner;
 

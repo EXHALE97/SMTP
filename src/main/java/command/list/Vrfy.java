@@ -1,11 +1,11 @@
 package command.list;
 
 import command.Command;
-import exception.InvalidParameterException;
 import exception.SmtpException;
 import model.MailFormUnits;
 import model.SmtpSocket;
 
+import java.security.InvalidParameterException;
 import java.util.Map;
 
 public class Vrfy implements Command {

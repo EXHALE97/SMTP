@@ -1,12 +1,12 @@
 package command.list;
 
 import command.Command;
-import exception.InvalidParameterException;
 import exception.SmtpException;
 import model.MailFormUnits;
 import model.SmtpSocket;
 import model.Validator;
 
+import java.security.InvalidParameterException;
 import java.util.Map;
 
 public class Mail implements Command {

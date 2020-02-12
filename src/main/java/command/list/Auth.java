@@ -1,7 +1,6 @@
 package command.list;
 
 import command.Command;
-import exception.InvalidParameterException;
 import exception.SmtpException;
 import model.MailFormUnits;
 import model.SmtpSocket;
@@ -14,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.InvalidParameterException;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Properties;

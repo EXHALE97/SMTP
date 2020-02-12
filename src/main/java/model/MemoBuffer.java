@@ -47,7 +47,6 @@ public final class MemoBuffer {
                     memoBuffer.append("\n");
                 }
             } catch (Exception e) {
-                //
             }
         }
     }

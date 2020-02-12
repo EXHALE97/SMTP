@@ -3,16 +3,8 @@ package command.list;
 import command.Command;
 import exception.*;
 import model.*;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.security.InvalidParameterException;
 import java.util.*;
 
 public class SendMessage implements Command {
