@@ -1,70 +1,65 @@
 package command.list;
 
 import command.Command;
-import exception.InvalidParameterException;
-import exception.SmtpException;
+import exception.*;
 import model.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
 
 public class SendMessage implements Command {
-
     @Override
     public void execute(Map<MailFormUnits, String> parameters) throws InvalidParameterException, SmtpException {
-        String toValue = parameters.get(MailFormUnits.TO);
+        String toValue = parameters.get(MailFormUnits.SENDER);
         String subjectValue = parameters.get(MailFormUnits.SUBJECT);
         String mailTextValue = parameters.get(MailFormUnits.MAIL_TEXT);
 
-        if (!Validator.validateMailText(mailTextValue)) {
-            throw new InvalidParameterException("'.' can't be a single character in sentence");
-        }
 
         if (!Validator.validateGetter(toValue)) {
             throw new InvalidParameterException("invalid getter email\\emails");
         }
 
         try {
-            (new Ehlo()).execute(parameters);
-            (new Mail()).execute(parameters);
+            Map<MailFormUnits, String> parameter = new HashMap<MailFormUnits, String>();
+            parameter.put(MailFormUnits.ARGUMENT, "");
+            (new Connect()).execute(null);
+            (new Ehlo()).execute(null);
+            (new Auth()).execute(null);
+
+            parameter.replace(MailFormUnits.ARGUMENT, "yulyaevrafova92@gmail.com");
+            (new Mail()).execute(parameter);
 
             for (String rcpt : toValue.split(",")) {
-                Map<MailFormUnits, String> parameter = new HashMap<MailFormUnits, String>();
-                parameter.put(MailFormUnits.TO, rcpt);
+                parameter.replace(MailFormUnits.ARGUMENT, rcpt);
                 (new Rcpt()).execute(parameter);
             }
 
             (new Data()).execute(null);
-
-            MemoBuffer memoBuffer = MemoBuffer.getInstance();
-            SmtpSocket smtpSocket = SmtpSocket.getInstance();
-            PrintWriter output = smtpSocket.getOutput();
-            Scanner input = smtpSocket.getInput();
-            memoBuffer.appendClient("Subject: " + subjectValue + "\n");
-            output.write("Subject: " + subjectValue + "\r\n");
-            output.flush();
+            parameter.replace(MailFormUnits.ARGUMENT, "Subject: " + subjectValue);
+            (new Submit()).execute(parameter);
 
             long messageId = MessageID.getMessageID();
-            memoBuffer.appendClient("Message ID: " + messageId + "\n");
-            output.write("Message ID: " + messageId + "\r\n");
-            output.flush();
+            parameter.replace(MailFormUnits.ARGUMENT, "Message-ID: " + messageId);
+            (new Submit()).execute(parameter);
 
-            memoBuffer.appendClient("\n");
-            output.write("\r\n");
-            output.flush();
+            parameter.replace(MailFormUnits.ARGUMENT, "");
+            (new Submit()).execute(parameter);
 
             for (String sentence : mailTextValue.split("\n")) {
-                memoBuffer.appendClient(sentence + "\n");
-                output.write(sentence + "\r\n");
-                output.flush();
+                parameter.replace(MailFormUnits.ARGUMENT, sentence);
+                (new Submit()).execute(parameter);
             }
 
-            memoBuffer.appendClient(".\n");
-            output.write("\r\n.\r\n");
-            output.flush();
-            memoBuffer.appendServer(input.nextLine());
+            parameter.replace(MailFormUnits.ARGUMENT, "\r\n.");
+            (new Submit()).execute(parameter);
 
             (new Quit()).execute(null);
         } catch (Exception e) {

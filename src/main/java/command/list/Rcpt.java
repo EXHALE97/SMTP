@@ -14,7 +14,7 @@ public class Rcpt implements Command {
 
     @Override
     public void execute(Map<MailFormUnits, String> parameters) throws InvalidParameterException, SmtpException {
-        String toValue = parameters.get(MailFormUnits.TO);
+        String toValue = parameters.get(MailFormUnits.SENDER);
         String argumentValue = parameters.get(MailFormUnits.ARGUMENT);
 
         String rcpt;

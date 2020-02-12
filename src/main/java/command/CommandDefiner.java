@@ -2,7 +2,7 @@ package command;
 
 import java.util.Optional;
 
-public class CommandFactory {
+public class CommandDefiner {
     public static Optional<Command> defineCommand(String commandName) {
         if (commandName == null) {
             return Optional.empty();

@@ -5,29 +5,21 @@ import exception.InvalidParameterException;
 import exception.SmtpException;
 import model.MailFormUnits;
 import model.SmtpSocket;
-import model.Validator;
 
 import java.util.Map;
 
-public class Mail implements Command {
-    private static final String MAIL = "MAIL FROM:<%s>\r\n";
-
+public class Submit implements Command {
+    private static final String SUBMIT = "%s\r\n";
     @Override
     public void execute(Map<MailFormUnits, String> parameters) throws InvalidParameterException, SmtpException {
         String argumentValue = parameters.get(MailFormUnits.ARGUMENT);
-
-        if (!Validator.validateEmail(argumentValue)) {
-            throw new InvalidParameterException("invalid sender email");
-        }
-
-        String mail = String.format(MAIL, argumentValue);
-        SmtpSocket smtpSocket = SmtpSocket.getInstance();
+        String submit = String.format(SUBMIT, argumentValue);
+        SmtpSocket mailSocket = SmtpSocket.getInstance();
         try {
-            executeCommand(mail);
+            executeCommand(submit);
         } catch (Exception e) {
-            smtpSocket.close();
+            mailSocket.close();
             throw new SmtpException(e);
         }
     }
 }
-

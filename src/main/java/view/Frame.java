@@ -18,9 +18,7 @@ public class Frame {
 
     private static final Logger LOGGER = LogManager.getLogger(Frame.class);
     private JFrame frame;
-    private JTextField smtpServerField = new JTextField();
-    private JTextField fromField = new JTextField();
-    private JTextField toField = new JTextField();
+    private JTextField senderField = new JTextField();
     private JTextField subjectField = new JTextField();
     private JTextArea messageArea = new JTextArea();
     private JTextArea memoArea = new JTextArea();
@@ -28,50 +26,40 @@ public class Frame {
     public Frame() {
         frame = new JFrame();
         setFrame();
-        setFieldsPanel();
-        setMessagePanel();
-        setButtons();
+        setMainPart();
         setMemoPanel();
     }
 
     private void setFrame() {
-        frame.setLayout(new GridLayout(4, 1));
+        frame.setLayout(new GridLayout(2, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(700,550));
-        frame.setSize(new Dimension(700, 550));
+        frame.setPreferredSize(new Dimension(550,900));
+        frame.setSize(new Dimension(550, 900));
         frame.setTitle("SMTP");
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
     }
-    private void setFieldsPanel() {
-        JPanel panel = new JPanel();
-
-        panel.add(new Label("SMTP server"));
-        smtpServerField.setColumns(25);
-        smtpServerField.setToolTipText("SMTP server");
-        panel.add(smtpServerField);
-
-        panel.add(new Label("from"));
-        fromField.setColumns(25);
-        fromField.setToolTipText("from");
-        panel.add(fromField);
-
-        panel.add(new Label("to"));
-        toField.setColumns(25);
-        toField.setToolTipText("to");
-        panel.add(toField);
-
-        panel.add(new Label("subject"));
-        subjectField.setColumns(25);
+    private void setMainPart() {
+        JPanel panel1 = new JPanel();
+        panel1.setLayout(new FlowLayout());
+        panel1.add(new Label("to"));
+        senderField.setColumns(43);
+        senderField.setToolTipText("to");
+        panel1.add(senderField);
+        panel1.add(new Label("subject"));
+        subjectField.setColumns(43);
         subjectField.setToolTipText("subject");
-        panel.add(subjectField);
-
+        panel1.add(subjectField);
+        JScrollPane panel2 = new JScrollPane((messageArea));
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3,1));
+        panel.add(panel1);
+        panel.add(panel2);
+        setButtons(panel);
         frame.add(panel);
     }
-    private void setMessagePanel() {
-        frame.add(new JScrollPane((new JPanel()).add(messageArea)));
-    }
-    private void setButtons() {
+
+    private void setButtons(JPanel panel) {
         JButton sendButton = new JButton();
         sendButton.setText("send_message");
 
@@ -79,9 +67,7 @@ public class Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Map<MailFormUnits, String> parameters = new HashMap<MailFormUnits, String>();
-                parameters.put(MailFormUnits.SMTP_SERVER, smtpServerField.getText());
-                parameters.put(MailFormUnits.FROM, fromField.getText());
-                parameters.put(MailFormUnits.TO, toField.getText());
+                parameters.put(MailFormUnits.SENDER, senderField.getText());
                 parameters.put(MailFormUnits.SUBJECT, subjectField.getText());
                 parameters.put(MailFormUnits.MAIL_TEXT, messageArea.getText());
 
@@ -107,14 +93,15 @@ public class Frame {
         });
 
 
-        JPanel panel = new JPanel();
+        JPanel panel1 = new JPanel();
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(0, 50, 0, 50);
-        panel.setLayout(new GridBagLayout());
-        panel.add(sendButton, c);
-        panel.add(allCommandsButton, c);
-        frame.add(panel);
+        panel1.setLayout(new GridBagLayout());
+        panel1.add(sendButton, c);
+        panel1.add(allCommandsButton, c);
+        panel.add(panel1);
     }
+
     private void setMemoPanel() {
         memoArea.setBackground(Color.BLACK);
         memoArea.setEnabled(false);

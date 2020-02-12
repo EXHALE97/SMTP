@@ -3,6 +3,7 @@ package command;
 import command.list.*;
 
 public enum CommandType {
+    AUTH(new Auth()),
     EHLO(new Ehlo()),
     HELO(new Helo()),
     MAIL(new Mail()),
@@ -18,23 +19,9 @@ public enum CommandType {
     NOOP(new Noop()),
     QUIT(new Quit()),
     TURN(new Turn()),
+    CONNECT(new Connect()),
+    SUBMIT(new Submit()),
     SEND_MESSAGE(new SendMessage());
-
-//    EHLO("EHLO %s\r"),
-//    HELO("HELO %s\r"),
-//    MAIL("MAIL FROM:<%s>\r"),
-//    RCPT("RCPT TO:<%s>\r"),
-//    DATA("DATA\r"),
-//    RSET("RSET"),
-//    SEND("SEND FROM:<%s>"),
-//    SOML("SOML FROM:<%s>"),
-//    SAML("SAML FROM:<%s>"),
-//    VRFY("VRFY %s"),
-//    EXPN("EXPN %s"),
-//    HELP("HELP %s"),
-//    NOOP("NOOP"),
-//    QUIT("QUIT\r"),
-//    TURN("TURN");
 
     private Command command;
 

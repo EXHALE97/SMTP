@@ -1,8 +1,7 @@
 package exception;
 
 public class SmtpException extends Exception {
-    public SmtpException() {
-    }
+    public SmtpException() {}
 
     public SmtpException(String message) {
         super(message);

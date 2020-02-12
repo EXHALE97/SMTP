@@ -1,21 +1,18 @@
 package model;
 
 import exception.SmtpException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.*;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 import java.util.Scanner;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public final class SmtpSocket {
-
     private static final Logger LOGGER = LogManager.getLogger(SmtpSocket.class);
     private static boolean instanceCreated;
     private static final SmtpSocket INSTANCE;
@@ -24,9 +21,11 @@ public final class SmtpSocket {
         instanceCreated = true;
     }
 
+    private static final String SMTP_PROPERTIES_PATH = File.separator + "property" + File.separator + "smtp.properties";
+    private static final String HOST = "smtp.host";
+    private static final String PORT = "smtp.port";
     private static boolean socketCreated;
-    private static final int PORT = 25;
-    private Socket socket;
+    private SSLSocket socket;
     private Scanner input;
     private PrintWriter output;
 
@@ -41,22 +40,41 @@ public final class SmtpSocket {
         return INSTANCE;
     }
 
-    public void create(String address) throws SmtpException {
+    public void create() throws SmtpException {
         if (socketCreated) {
-            return;
+            throw new SmtpException("Socket has already connected");
         }
+
+        URL url = this.getClass().getResource(SMTP_PROPERTIES_PATH);
+        if (url == null) {
+            LOGGER.log(Level.FATAL, "smtp property file hasn't found");
+            throw new RuntimeException("smtp property file hasn't found");
+        }
+
+        Properties properties = new Properties();
+
         try {
-            InetAddress inetAddress = InetAddress.getByName(address);
-            if (!inetAddress.isReachable(5000)) {
-                throw new SmtpException(address + " is invalid host");
-            }
-            socket = new Socket(inetAddress, PORT);
+            properties.load(new FileInputStream(new File(url.toURI())));
+        } catch (URISyntaxException e) {
+            LOGGER.log(Level.FATAL, e);
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            LOGGER.log(Level.FATAL, e);
+            throw new RuntimeException(e);
+        }
+
+        try {
+            String host = properties.getProperty(HOST);
+            int port = Integer.parseInt(properties.getProperty(PORT));
+
+            SSLSocketFactory ssf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            socket = (SSLSocket) ssf.createSocket(host, port);
             input = new Scanner(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
             output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             MemoBuffer memoBuffer = MemoBuffer.getInstance();
-            memoBuffer.appendClient("connected to " + address + "\n");
-            memoBuffer.appendServer(input.nextLine());
+            memoBuffer.appendClient("connected to " + host + "\n");
+            memoBuffer.appendServer(input);
 
             socketCreated = true;
         } catch (UnknownHostException e) {
@@ -73,30 +91,34 @@ public final class SmtpSocket {
 
         if (input != null) {
             input.close();
+            input = null;
         }
 
         if (output != null) {
             output.close();
+            output = null;
         }
 
         if (socket != null) {
             try {
                 socket.close();
+                socket = null;
             } catch (IOException e) {
-                LOGGER.log(Level.WARN, e);
+                LOGGER.log(Level.FATAL, e);
+                throw new RuntimeException(e);
             }
         }
     }
 
     public Scanner getInput() throws SmtpException {
-        if (!socketCreated) {
+        if (input == null) {
             throw new SmtpException("socket closed");
         }
         return input;
     }
 
     public PrintWriter getOutput() throws SmtpException {
-        if (!socketCreated) {
+        if (output == null) {
             throw new SmtpException("socket closed");
         }
         return output;
