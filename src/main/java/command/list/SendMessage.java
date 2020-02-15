@@ -26,7 +26,7 @@ public class SendMessage implements Command {
             (new Ehlo()).execute(null);
             (new Auth()).execute(null);
 
-            parameter.replace(MailFormUnits.ARGUMENT, "yulyaevrafova92@gmail.com");
+            parameter.replace(MailFormUnits.ARGUMENT, "yulyaevrafova@mail.ru");
             (new Mail()).execute(parameter);
 
             for (String rcpt : toValue.split(",")) {

@@ -40,7 +40,7 @@ public final class MemoBuffer {
         @Override
         public void run() {
             try {
-                while (true) {
+                while (input.hasNextLine()) {
                     String s = input.nextLine();
                     memoBuffer.append("Server: ");
                     memoBuffer.append(s);
@@ -54,7 +54,7 @@ public final class MemoBuffer {
     public void appendClient(String s) {
         memoBuffer.append("Client: ");
         memoBuffer.append(s);
-        memoBuffer.append("\n");
+       // memoBuffer.append("\n");
     }
 
     public void appendServer(Scanner input) {

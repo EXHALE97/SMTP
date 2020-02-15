@@ -34,8 +34,8 @@ public class Frame {
     private void setFrame() {
         frame.setLayout(new GridLayout(2, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(550,900));
-        frame.setSize(new Dimension(550, 900));
+        frame.setPreferredSize(new Dimension(550,800));
+        frame.setSize(new Dimension(550, 800));
         frame.setTitle("SMTP");
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
@@ -44,7 +44,7 @@ public class Frame {
         JPanel panel1 = new JPanel();
         panel1.setLayout(new FlowLayout());
         panel1.add(new Label("to"));
-        senderField.setColumns(43);
+        senderField.setColumns(46);
         senderField.setToolTipText("to");
         panel1.add(senderField);
         panel1.add(new Label("subject"));
@@ -62,7 +62,7 @@ public class Frame {
 
     private void setButtons(JPanel panel) {
         JButton sendButton = new JButton();
-        sendButton.setText("send_message");
+        sendButton.setText("Send message");
 
         sendButton.addActionListener(new ActionListener() {
             @Override
@@ -73,7 +73,7 @@ public class Frame {
                 parameters.put(MailFormUnits.MAIL_TEXT, messageArea.getText());
 
                 try {
-                    Controller.getInstance().processRequest(sendButton.getText(), parameters);
+                    Controller.getInstance().processRequest("send_message", parameters);
                     updateMemo();
                 } catch (InvalidParameterException | SmtpException exc) {
                     LOGGER.log(Level.ERROR, exc);

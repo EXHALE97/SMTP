@@ -21,7 +21,7 @@ import java.util.Properties;
 public class Auth implements Command {
     private static final Logger LOGGER = LogManager.getLogger(Auth.class);
 
-    private static final String MAIL_PROPERTIES_PATH = File.separator + "property" + File.separator + "mail.properties";
+    private static final String MAIL_PROPERTIES_PATH = "/property/mail.properties";
     private static final String LOGIN = "mail.login";
     private static final String PASSWORD = "mail.password";
 

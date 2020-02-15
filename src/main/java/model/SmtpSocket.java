@@ -21,7 +21,7 @@ public final class SmtpSocket {
         instanceCreated = true;
     }
 
-    private static final String SMTP_PROPERTIES_PATH = File.separator + "property" + File.separator + "smtp.properties";
+    private static final String SMTP_PROPERTIES_PATH = "/property/smtp.properties";
     private static final String HOST = "smtp.host";
     private static final String PORT = "smtp.port";
     private static boolean socketCreated;
@@ -42,7 +42,7 @@ public final class SmtpSocket {
 
     public void create() throws SmtpException {
         if (socketCreated) {
-            throw new SmtpException("Socket has already connected");
+            throw new SmtpException("Socket is already connected");
         }
 
         URL url = this.getClass().getResource(SMTP_PROPERTIES_PATH);
